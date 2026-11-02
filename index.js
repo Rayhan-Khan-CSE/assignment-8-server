@@ -30,6 +30,11 @@ app.post('/createEvent', async(req,res) =>{
     res.send(result)
 })
 
+app.get('/events', async(req,res) =>{
+  const result = await destinationCollection.find().toArray()
+  res.send(result)
+})
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
