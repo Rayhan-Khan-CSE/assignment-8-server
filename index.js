@@ -41,6 +41,16 @@ app.get('/events/:id', async(req,res) =>{
   res.send(result)
 })
 
+app.patch('/events/:id', async(req,res) =>{
+  const {id} = req.params
+  const updatedData = req.body
+  const result = await destinationCollection.updateOne(
+    {_id: new ObjectId(id)},
+    {$set: updatedData}
+  )
+  res.send(result)
+})
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
