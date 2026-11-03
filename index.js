@@ -34,7 +34,7 @@ const verifyToken = async(req,res,next) =>{
   if(!token){
     return res.status(401).send({msg: "Unauthorized!"})
   }
-  const JWKS = createRemoteJWKSet(new URL('http://localhost:3000/api/auth/jwks'))
+  const JWKS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwks`))
   try {
   const {payload} = await jwtVerify(token, JWKS)
   next();
@@ -131,3 +131,5 @@ app.get('/', (req, res) => {
 app.listen(PORT, () =>{
     console.log(`Server is running at ${PORT}`);
 })
+
+export default app
