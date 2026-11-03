@@ -31,18 +31,30 @@ app.post('/createEvent', async(req,res) =>{
     res.send(result)
 })
 
-app.post('/joined', async(req,res) =>{
-  const data = req.body
+app.post('/joined', async (req, res) => {
+    const data = req.body;
+    const alreadyJoined = await joinedCollection.findOne({
+        email: data.email,
+        eventId: data.eventId
+    });
     const result = await joinedCollection.insertOne(data);
-    console.log(result)
-    res.send(result)
-})
+    res.send({message: "Event joined successfully",result});
+});
 
-app.get('/my-events/:email', async(req,res) =>{
-  const {email} = req.params
-  const result = await joinedCollection.find({email:email}).toArray()
-  res.send(result)
-})
+app.get('/my-events/:email', async (req, res) => {
+    const { email } = req.params;
+    const result = await joinedCollection
+        .find({ email: email })
+        .toArray();
+    res.send(result);
+});
+app.get('/my-created-events/:email', async (req, res) => {
+    const { email } = req.params;
+    const result = await destinationCollection
+        .find({ email: email })
+        .toArray();
+    res.send(result);
+});
 
 app.get('/events', async(req,res) =>{
   const result = await destinationCollection.find().toArray()
