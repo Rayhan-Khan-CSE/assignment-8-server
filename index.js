@@ -38,6 +38,12 @@ app.post('/joined', async(req,res) =>{
     res.send(result)
 })
 
+app.get('/my-events/:email', async(req,res) =>{
+  const {email} = req.params
+  const result = await joinedCollection.find({email:email}).toArray()
+  res.send(result)
+})
+
 app.get('/events', async(req,res) =>{
   const result = await destinationCollection.find().toArray()
   res.send(result)
@@ -49,15 +55,25 @@ app.get('/events/:id', async(req,res) =>{
   res.send(result)
 })
 
-app.patch('/events/:id', async(req,res) =>{
-  const {id} = req.params
-  const updatedData = req.body
-  const result = await destinationCollection.updateOne(
-    {_id: new ObjectId(id)},
-    {$set: updatedData}
-  )
-  res.send(result)
-})
+app.patch('/events/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  const preEvent = await destinationCollection.findOne({
+    _id: new ObjectId(id)
+  });
+  const result1 = await destinationCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: updatedData }
+  );
+  const result2 = await joinedCollection.updateMany(
+    { title: preEvent.title },
+    { $set: updatedData }
+  );
+  res.send({
+    destinationUpdated: result1.modifiedCount,
+    joinedUpdated: result2.modifiedCount
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
