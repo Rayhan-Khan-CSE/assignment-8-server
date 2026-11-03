@@ -75,6 +75,24 @@ app.patch('/events/:id', async (req, res) => {
   });
 });
 
+app.delete('/events/:id', async (req, res) => {
+    const { id } = req.params;
+    const event = await destinationCollection.findOne({
+        _id: new ObjectId(id)
+    });
+    const result1 = await destinationCollection.deleteOne({
+        _id: new ObjectId(id)
+    });
+    const result2 = await joinedCollection.deleteMany({
+        title: event.title
+    });
+    res.send({
+        destinationDeleted: result1.deletedCount,
+        joinedDeleted: result2.deletedCount
+    });
+
+});
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
