@@ -22,10 +22,18 @@ export async function connectToMongoDB() {
 const mongoClient = await connectToMongoDB();
 const db = mongoClient.db("hermione")
 const destinationCollection = db.collection("destination")
+const joinedCollection = db.collection("joined")
 
 app.post('/createEvent', async(req,res) =>{
     const data = req.body
     const result = await destinationCollection.insertOne(data);
+    console.log(result)
+    res.send(result)
+})
+
+app.post('/joined', async(req,res) =>{
+  const data = req.body
+    const result = await joinedCollection.insertOne(data);
     console.log(result)
     res.send(result)
 })
