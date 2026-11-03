@@ -57,6 +57,11 @@ app.post('/joined', async (req, res) => {
         email: data.email,
         eventId: data.eventId
     });
+    if (alreadyJoined) {
+        return res.status(409).send({
+            message: "Already joined this event"
+        });
+    }
     const result = await joinedCollection.insertOne(data);
     res.send({message: "Event joined successfully",result});
 });
